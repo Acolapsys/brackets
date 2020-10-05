@@ -1,5 +1,9 @@
 # Brackets
 
+
+
+
+
 ## Task
 
 Implement function `check(str, bracketsConfig)`, that for given brackets sequence will return `true` if it is correct and `false` otherwise
