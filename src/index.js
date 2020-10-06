@@ -1,12 +1,8 @@
 module.exports = function check(str, bracketsConfig) {
-
-
-
-
   let ind = 0;
   let result = true;
 
-  const isLeftBracket = () => {
+  const isLeftBracket = () => { //проверяем на открывающую скобку
     let leftBracket = false
     bracketsConfig.forEach((element, index) => { 
       if (element[0] === str[ind]) {
@@ -16,51 +12,30 @@ module.exports = function check(str, bracketsConfig) {
     return leftBracket
 
   }
-  const typeofBracket = (leftBracket) => { //проверяем какой это тип, передаем на вход символ, 
-      let currentPair = []
-      bracketsConfig.forEach((element, index) => { // возвращаем индекс массива
-        console.log(element, index, bracketsConfig)
-        if (element[0] === leftBracket) {
-          currentPair = element
-        }
-      });
-      return currentPair
+  const typeofBracket = () => { //проверяем какой это тип скобок
+      return bracketsConfig.reduce((acc, element) => 
+        acc = element[0] === str[ind] ? element : acc) // возвращаем массив с текущими скобками
+        
   }
-  const isPair = (currentBracket) => {  // рекурсивно проверяем пары, на входе текущий элемент строки
-
-      console.log("index start ", ind, "string = ", str, "result is ", result)
-      if (!result) return false
-      if (ind >= str.length) return false
-      const currentPair = typeofBracket(currentBracket)
-      console.log("currentPair is ", currentPair)
+  const isPair = () => {  // рекурсивно проверяем пары
+      const currentPair = typeofBracket() // определяем текущий вид скобок
       ind++
-      if (str[ind] === currentPair[1]) { // если текущий элемент закрывающа скобка, возвращаем true
-        console.log("index close ", ind, "string = ", str, "result is ", result)
-        ind++
-        return true
-      }
-      if (isLeftBracket()) { //если открывающая скобка, запускаем рекурсию
-        console.log("index open ", ind, "string = ", str, "result is ", result)
-        isPair(str[ind])
-        if (str[ind] === currentPair[1]) { // если текущий элемент закрывающа скобка, возвращаем true
-          console.log("index close ", ind, "string = ", str, "result is ", result)
+      while (str[ind] !== currentPair[1]) { // ждем закрывающую скобку
+        if (isLeftBracket()) { //если открывающая скобка, запускаем рекурсию
+          isPair()
           ind++
-          return true
+        } else {
+            return false // иначе недопустимая закрывающая скобка = false
         }
       }
-      console.log("index last ", ind, "string = ", str, "result is ", result)
-      result = false
-      return result
+      return true // если прошел весь цикл и не было ошибок - true
   }
-  if (str.length % 2 !== 0) return false
 
-  while (ind < str.length) {
-    if (isLeftBracket() && result) {
+  if (str.length % 2 !== 0) return false // если к-во скобок нечетное - false
 
-    result =  isPair(str[ind])
-    } else {
-      return false
-    }
+  while (ind < str.length) { //проверяем все невложенные скобки, если открывающая -  вызываем isPair иначе  false
+    result = isLeftBracket() ? isPair(str[ind]) : false
+    ind++
   }
   return result
   // your solution
